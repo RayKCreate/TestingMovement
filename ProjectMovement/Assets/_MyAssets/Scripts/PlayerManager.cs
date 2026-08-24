@@ -1,16 +1,26 @@
+using System;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    InputSystem_Actions inputActions;
+    private InputActions controls;
+    CharacterController characterController;
+
+    [SerializeField] Animator playerAnimator;
+
 
 
     private void Awake()
     {
-        inputActions = new InputSystem_Actions();
-        inputActions = GetComponent<InputSystem_Actions>();
+        characterController = GetComponent<CharacterController>();
+        playerAnimator = GameObject.Find("Iddle").GetComponent<Animator>();
+        ControlPlayer();
 
+    }
 
+    private void ControlPlayer()
+    {
+        controls = new InputActions();
 
 
     }
@@ -29,11 +39,11 @@ public class PlayerManager : MonoBehaviour
 
     private void OnEnable()
     {
-        inputActions.Enable();
+        controls.Enable();
     }
 
     private void OnDisable()
     {
-        inputActions.Disable();
+        controls.Disable();
     }
 }
