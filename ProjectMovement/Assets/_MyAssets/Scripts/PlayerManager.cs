@@ -37,7 +37,11 @@ public class PlayerManager : MonoBehaviour
         newActions.PlayerMoveSet.Walk.canceled += ctx => walk.y = 0f;
         newActions.PlayerMoveSet.Run.started += _ =>
         {
-            isRunning = !isRunning;
+            isRunning = true;
+        };
+        newActions.PlayerMoveSet.Run.canceled += _ =>
+        {
+            isRunning = false;
         };
     }
 
@@ -79,13 +83,13 @@ public class PlayerManager : MonoBehaviour
     private void SpeedCheck()
     {
         AnimatorStateInfo playerInfo = playerAnimator.GetCurrentAnimatorStateInfo(0);
-        if (isRunning)
-        {
-            actualSpeed = RunSpeed;
-        }
-        else if (playerInfo.IsName("WalkBackward"))
+        if (walk.y <= -0.2f)
         {
             actualSpeed = walkBackwardSpeed;
+        }
+        else if (isRunning) 
+        {
+            actualSpeed = RunSpeed;
         }
         else
         {
