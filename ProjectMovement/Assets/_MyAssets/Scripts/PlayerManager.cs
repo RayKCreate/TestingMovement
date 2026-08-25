@@ -5,6 +5,8 @@ public class PlayerManager : MonoBehaviour
 {
     private InputActions newActions;
     CharacterController playerController;
+    [SerializeField] LeanDetection leanDetectorL;
+    [SerializeField] LeanDetection leanDetectorR;
 
     [SerializeField] Animator playerAnimator;
 
@@ -35,6 +37,8 @@ public class PlayerManager : MonoBehaviour
     {
         playerController = GetComponent<CharacterController>();
         playerAnimator = GameObject.Find("Iddle").GetComponent<Animator>();
+        leanDetectorL = GameObject.FindGameObjectWithTag("LeanDetectorL").GetComponent<LeanDetection>();
+        leanDetectorR = GameObject.FindGameObjectWithTag("LeanDetectorR").GetComponent<LeanDetection>();
         ControlPlayer();
 
     }
@@ -111,6 +115,9 @@ public class PlayerManager : MonoBehaviour
         playerAnimator.SetFloat("Walk", walk.y);
         playerAnimator.SetBool("Run", isRunning);
         playerAnimator.SetFloat("Rotate", rotate);
+
+        playerAnimator.SetBool("LeanToLeft", leanDetectorR.leanToLeft);
+        playerAnimator.SetBool("LeanToRight", leanDetectorL.leanToRight);
     }
 
     private void SpeedCheck()
