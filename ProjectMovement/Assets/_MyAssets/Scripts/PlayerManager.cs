@@ -3,16 +3,27 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    private InputActions controls;
-    CharacterController characterController;
+    private InputActions newActions;
+    CharacterController playerController;
 
     [SerializeField] Animator playerAnimator;
 
 
+    Vector2 walk;
+
+
+    float initSpeed;
+    float actualSpeed;
+    float walkForwardSpeed;
+    float walkBackwardSpeed;
+    float RunSpeed;
+
+    bool isRunning;
+
 
     private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
+        playerController = GetComponent<CharacterController>();
         playerAnimator = GameObject.Find("Iddle").GetComponent<Animator>();
         ControlPlayer();
 
@@ -20,30 +31,76 @@ public class PlayerManager : MonoBehaviour
 
     private void ControlPlayer()
     {
-        controls = new InputActions();
+        newActions = new InputActions();
 
-
+        newActions.PlayerMoveSet.Walk.performed += ctx => walk.y = ctx.ReadValue<float>();
+        newActions.PlayerMoveSet.Walk.canceled += ctx => walk.y = 0f;
+        newActions.PlayerMoveSet.Run.started += _ =>
+        {
+            isRunning = !isRunning;
+        };
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        initSpeed = 0f;
+        actualSpeed = initSpeed;
+        walkForwardSpeed = 2f;
+        walkBackwardSpeed = 1f;
+        RunSpeed = 3f;
     }
 
     // Update is called once per frame
     void Update()
     {
+        SpeedCheck();
+
+        UpdateAnimations();
+        MovePlayer();
+    }
+
+    private void MovePlayer()
+    {
+        if (Mathf.Abs(walk.y) > 0.1f)
+        {
+            Vector3 movement = transform.forward * walk.y * actualSpeed;
+            playerController.Move(movement * Time.deltaTime);
+        }
+    }
+
+
+    private void UpdateAnimations()
+    {
+        playerAnimator.SetFloat("Walk", walk.y);
+        playerAnimator.SetBool("Run", isRunning);
+    }
+
+    private void SpeedCheck()
+    {
+        AnimatorStateInfo playerInfo = playerAnimator.GetCurrentAnimatorStateInfo(0);
+        if (isRunning)
+        {
+            actualSpeed = RunSpeed;
+        }
+        else if (playerInfo.IsName("WalkBackward"))
+        {
+            actualSpeed = walkBackwardSpeed;
+        }
+        else
+        {
+            actualSpeed = walkForwardSpeed;
+        }
 
     }
 
     private void OnEnable()
     {
-        controls.Enable();
+        newActions.Enable();
     }
 
     private void OnDisable()
     {
-        controls.Disable();
+        newActions.Disable();
     }
 }

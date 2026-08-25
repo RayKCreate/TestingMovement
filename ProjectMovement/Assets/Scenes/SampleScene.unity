@@ -600,7 +600,7 @@ CharacterController:
   m_Height: 1.8
   m_Radius: 0.45
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -616,6 +616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0bedb6f7f955744caafea83976b9150, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
+  playerAnimator: {fileID: 0}
 --- !u!1 &1555365937
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,6 +704,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 3bce2a1528e655749bd5ab9eb689f91f, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 93a28e6011ff1bf439b581d4a5c5e78d, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
