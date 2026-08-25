@@ -10,16 +10,23 @@ public class PlayerManager : MonoBehaviour
 
 
     Vector2 walk;
+    float rotate;
 
     float gravity;
 
     float initSpeed;
     float actualSpeed;
     float walkForwardSpeed;
+    float progressiveWalkSpeed;
+    [SerializeField] float walkExponent;
     float walkBackwardSpeed;
     float RunSpeed;
 
+    float rotateSpeed;
+
+
     float fallVelocity;
+
 
     bool isRunning;
 
@@ -38,6 +45,10 @@ public class PlayerManager : MonoBehaviour
 
         newActions.PlayerMoveSet.Walk.performed += ctx => walk.y = ctx.ReadValue<float>();
         newActions.PlayerMoveSet.Walk.canceled += ctx => walk.y = 0f;
+
+        newActions.PlayerMoveSet.Rotate.performed += ctx => rotate = ctx.ReadValue<float>();
+        newActions.PlayerMoveSet.Rotate.canceled += ctx => rotate = 0f;
+
         newActions.PlayerMoveSet.Run.started += _ =>
         {
             isRunning = true;
@@ -57,11 +68,14 @@ public class PlayerManager : MonoBehaviour
     private void VariablesValue()
     {
         gravity = Physics.gravity.y;
+        walkExponent = 2.75f;
         initSpeed = 0f;
         actualSpeed = initSpeed;
         walkForwardSpeed = 2f;
-        walkBackwardSpeed = 1f;
+        walkBackwardSpeed = 1.5f;
         RunSpeed = 3f;
+
+        rotateSpeed = 0.25f;
     }
 
     // Update is called once per frame
@@ -87,6 +101,8 @@ public class PlayerManager : MonoBehaviour
         move.y = fallVelocity;
 
         playerController.Move(move * Time.deltaTime);
+
+        transform.Rotate(Vector3.up * rotate * rotateSpeed * Time.deltaTime * -360f);
     }
 
 
@@ -98,7 +114,8 @@ public class PlayerManager : MonoBehaviour
 
     private void SpeedCheck()
     {
-        AnimatorStateInfo playerInfo = playerAnimator.GetCurrentAnimatorStateInfo(0);
+        progressiveWalkSpeed = Mathf.Pow(Mathf.Abs(walk.y), walkExponent) * Mathf.Sign(walk.y) * walkForwardSpeed;
+
         if (walk.y <= -0.2f)
         {
             actualSpeed = walkBackwardSpeed;
@@ -109,8 +126,9 @@ public class PlayerManager : MonoBehaviour
         }
         else
         {
-            actualSpeed = walkForwardSpeed;
+            actualSpeed = progressiveWalkSpeed;
         }
+
 
     }
 

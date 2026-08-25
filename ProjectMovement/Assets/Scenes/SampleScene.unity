@@ -617,6 +617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
   playerAnimator: {fileID: 0}
+  walkExponent: 2.75
 --- !u!1 &1555365937
 GameObject:
   m_ObjectHideFlags: 0
