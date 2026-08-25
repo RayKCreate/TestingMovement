@@ -11,12 +11,15 @@ public class PlayerManager : MonoBehaviour
 
     Vector2 walk;
 
+    float gravity;
 
     float initSpeed;
     float actualSpeed;
     float walkForwardSpeed;
     float walkBackwardSpeed;
     float RunSpeed;
+
+    float fallVelocity;
 
     bool isRunning;
 
@@ -48,6 +51,12 @@ public class PlayerManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        VariablesValue();
+    }
+
+    private void VariablesValue()
+    {
+        gravity = Physics.gravity.y;
         initSpeed = 0f;
         actualSpeed = initSpeed;
         walkForwardSpeed = 2f;
@@ -66,11 +75,18 @@ public class PlayerManager : MonoBehaviour
 
     private void MovePlayer()
     {
-        if (Mathf.Abs(walk.y) > 0.1f)
-        {
-            Vector3 movement = transform.forward * walk.y * actualSpeed;
-            playerController.Move(movement * Time.deltaTime);
-        }
+        //This Vector controls the movement of the player
+        Vector3 move = transform.forward * walk.y * actualSpeed;
+
+        //In the if I ensure that gravity works correctly when the player falls
+        if (playerController.isGrounded)
+            fallVelocity = -2f;
+        else
+        fallVelocity += gravity * Time.deltaTime;
+
+        move.y = fallVelocity;
+
+        playerController.Move(move * Time.deltaTime);
     }
 
 
