@@ -192,7 +192,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""id"": ""f20915cf-1fe7-4966-b912-2356f1f6dc4a"",
                     ""path"": ""<Gamepad>/leftStick/x"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""Invert"",
                     ""groups"": """",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,

@@ -110,6 +110,7 @@ public class PlayerManager : MonoBehaviour
     {
         playerAnimator.SetFloat("Walk", walk.y);
         playerAnimator.SetBool("Run", isRunning);
+        playerAnimator.SetFloat("Rotate", rotate);
     }
 
     private void SpeedCheck()
