@@ -73,7 +73,7 @@ public class PlayerManager : MonoBehaviour
         actualSpeed = initSpeed;
         walkForwardSpeed = 2f;
         walkBackwardSpeed = 1.5f;
-        RunSpeed = 3f;
+        RunSpeed = 4f;
 
         rotateSpeed = 0.25f;
     }
