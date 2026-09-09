@@ -1,4 +1,5 @@
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
@@ -10,6 +11,8 @@ public class PlayerManager : MonoBehaviour
 
     [SerializeField] Animator playerAnimator;
 
+
+    [SerializeField] CinemachineOrbitalFollow cinemachineFollow;
 
     Vector2 walk;
     float rotate;
@@ -30,6 +33,10 @@ public class PlayerManager : MonoBehaviour
     float fallVelocity;
 
 
+    float cameraHorizontalValue;
+    float cameraVerticalValue;
+
+
     bool isRunning;
 
 
@@ -39,6 +46,7 @@ public class PlayerManager : MonoBehaviour
         playerAnimator = GameObject.Find("Iddle").GetComponent<Animator>();
         leanDetectorL = GameObject.FindGameObjectWithTag("LeanDetectorL").GetComponent<LeanDetection>();
         leanDetectorR = GameObject.FindGameObjectWithTag("LeanDetectorR").GetComponent<LeanDetection>();
+        cinemachineFollow = GameObject.FindGameObjectWithTag("Camera").GetComponent<CinemachineOrbitalFollow>();
         ControlPlayer();
 
     }
@@ -53,14 +61,27 @@ public class PlayerManager : MonoBehaviour
         newActions.PlayerMoveSet.Rotate.performed += ctx => rotate = ctx.ReadValue<float>();
         newActions.PlayerMoveSet.Rotate.canceled += ctx => rotate = 0f;
 
-        newActions.PlayerMoveSet.Run.started += _ =>
+        newActions.PlayerMoveSet.Run.performed += _ =>
         {
-            isRunning = true;
+            isRunning = !isRunning;
         };
-        newActions.PlayerMoveSet.Run.canceled += _ =>
+
+        newActions.PlayerMoveSet.ResetCamera.performed += _ =>
         {
-            isRunning = false;
+            ResetCameraValues();
         };
+    }
+
+    private void ResetCameraValues()
+    {
+        if (cinemachineFollow.HorizontalAxis.Value != cinemachineFollow.HorizontalAxis.Center || cinemachineFollow.VerticalAxis.Value != cinemachineFollow.VerticalAxis.Center)
+        {
+            Debug.Log("cameraHorizontal Value: " + cinemachineFollow.HorizontalAxis.Value + " || CameraVertical Value: " + cinemachineFollow.VerticalAxis.Value);
+            Debug.Log("cameraHorizontal Center: " + cinemachineFollow.HorizontalAxis.Center + " || CameraVertical Center: " + cinemachineFollow.VerticalAxis.Center);
+            cinemachineFollow.HorizontalAxis.Value = cinemachineFollow.HorizontalAxis.Center;
+            cinemachineFollow.VerticalAxis.Value = cinemachineFollow.VerticalAxis.Center;
+        }
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -75,11 +96,12 @@ public class PlayerManager : MonoBehaviour
         walkExponent = 2.75f;
         initSpeed = 0f;
         actualSpeed = initSpeed;
-        walkForwardSpeed = 2f;
+        walkForwardSpeed = 3.5f;
         walkBackwardSpeed = 1.5f;
-        RunSpeed = 4f;
+        RunSpeed = 5.5f;
 
         rotateSpeed = 0.25f;
+
     }
 
     // Update is called once per frame

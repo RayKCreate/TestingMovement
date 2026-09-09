@@ -7,6 +7,7 @@ TagManager:
   - LeanDetectorR
   - LeanDetectorL
   - Wall
+  - Camera
   layers:
   - Default
   - TransparentFX
