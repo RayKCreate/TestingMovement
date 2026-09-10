@@ -47,8 +47,8 @@ public class PlayerManager : MonoBehaviour
     {
         playerController = GetComponent<CharacterController>();
         playerAnimator = GameObject.Find("Iddle").GetComponent<Animator>();
-        leanDetectorL = GameObject.FindGameObjectWithTag("LeanDetectorL").GetComponent<LeanDetection>();
-        leanDetectorR = GameObject.FindGameObjectWithTag("LeanDetectorR").GetComponent<LeanDetection>();
+        //leanDetectorL = GameObject.FindGameObjectWithTag("LeanDetectorL").GetComponent<LeanDetection>();
+        //leanDetectorR = GameObject.FindGameObjectWithTag("LeanDetectorR").GetComponent<LeanDetection>();
         cinemachineFollow = GameObject.FindGameObjectWithTag("Camera").GetComponent<CinemachineOrbitalFollow>();
         ControlPlayer();
 
@@ -89,13 +89,6 @@ public class PlayerManager : MonoBehaviour
 
     }
 
-
-    /*private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(transform.position, (transform.position - new Vector3(0f, 0.2f, 0f)));
-    }*/
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -114,7 +107,7 @@ public class PlayerManager : MonoBehaviour
 
         rotateSpeed = 0.25f;
 
-        jumpHeight = 2f;
+        jumpHeight = 1.5f;
         isJumping = false;
     }
 
@@ -138,11 +131,8 @@ public class PlayerManager : MonoBehaviour
 
         if (playerController.isGrounded && fallVelocity <= 2f)
         {
-            Debug.Log("En el suelo");
             isJumping = false;
         }
-        if (!playerController.isGrounded)
-            Debug.Log("AIREEE");
 
     }
 
@@ -172,7 +162,6 @@ public class PlayerManager : MonoBehaviour
         if (playerController.isGrounded && !isJumping)
         {
             isJumping = true;
-            Debug.Log("Saltandoo");
             playerAnimator.SetTrigger("Jump");
             fallVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
@@ -184,8 +173,8 @@ public class PlayerManager : MonoBehaviour
         playerAnimator.SetBool("Run", isRunning);
         playerAnimator.SetFloat("Rotate", rotate);
         playerAnimator.SetBool("IsGrounded", playerController.isGrounded);
-        playerAnimator.SetBool("LeanToLeft", leanDetectorR.leanToLeft);
-        playerAnimator.SetBool("LeanToRight", leanDetectorL.leanToRight);
+        //playerAnimator.SetBool("LeanToLeft", leanDetectorR.leanToLeft);
+        //playerAnimator.SetBool("LeanToRight", leanDetectorL.leanToRight);
         playerAnimator.SetBool("IsJumping", isJumping);
 
     }
