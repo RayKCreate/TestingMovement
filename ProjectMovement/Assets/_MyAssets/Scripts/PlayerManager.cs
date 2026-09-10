@@ -1,47 +1,48 @@
 using System;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerManager : MonoBehaviour
 {
+    [Header("Components")]
     private InputActions newActions;
     CharacterController playerController;
-    [SerializeField] LeanDetection leanDetectorL;
-    [SerializeField] LeanDetection leanDetectorR;
+    //[SerializeField] LeanDetection leanDetectorL;
+    //[SerializeField] LeanDetection leanDetectorR;
 
     [SerializeField] Animator playerAnimator;
-
-
     [SerializeField] CinemachineOrbitalFollow cinemachineFollow;
 
+
+    [Header("Walk and Rotate Variables")]
     Vector2 walk;
-    float rotate;
-
-    float gravity;
-
     float initSpeed;
     float actualSpeed;
-    float walkForwardSpeed;
-    float progressiveWalkSpeed;
-    [SerializeField] float walkExponent;
-    float walkBackwardSpeed;
-    float RunSpeed;
-
+    [SerializeField] float walkForwardSpeed;
+    [SerializeField] float progressiveWalkSpeed;
+    float walkExponent;
+    [SerializeField] float walkBackwardSpeed;
+    [SerializeField] float RunSpeed;
+    float rotate;
     float rotateSpeed;
 
-
+    [Header("Jump Variables")]
+    float gravity;
     float fallVelocity;
-
+    [SerializeField] float jumpHeight; 
     RaycastHit groundDetect;
 
     float cameraHorizontalValue;
     float cameraVerticalValue;
 
 
+    [Header("Check Variables")]
     bool isRunning;
     bool isJumping;
+    bool isCruching;
+    
 
-    [SerializeField] float jumpHeight; 
 
     private void Awake()
     {
@@ -75,7 +76,36 @@ public class PlayerManager : MonoBehaviour
         };
 
         newActions.PlayerMoveSet.Jump.started += _ => Jump();
+
+        newActions.PlayerMoveSet.Crouch.performed += _ =>
+        {
+            if(_.control.device is Keyboard)
+            {
+                isCruching = true;
+                Debug.Log("Está Agachado");
+            }
+            else if (_.control.device is Gamepad)
+            {
+                isCruching = !isCruching;
+                if(isCruching)
+                    Debug.Log("Está Levantado");
+                else
+                    Debug.Log("Está Agachado");
+
+            }
+        };
+
+        newActions.PlayerMoveSet.Crouch.canceled += _ =>
+        {
+            if (_.control.device is Keyboard)
+            {
+                isCruching = false;
+                Debug.Log("Está Levantado");
+            }
+        };
+
     }
+
 
     private void ResetCameraValues()
     {
@@ -102,8 +132,8 @@ public class PlayerManager : MonoBehaviour
         initSpeed = 0f;
         actualSpeed = initSpeed;
         walkForwardSpeed = 3.5f;
-        walkBackwardSpeed = 1.5f;
-        RunSpeed = 5.5f;
+        walkBackwardSpeed = 2f;
+        RunSpeed = 6.5f;
 
         rotateSpeed = 0.25f;
 
@@ -117,7 +147,7 @@ public class PlayerManager : MonoBehaviour
         SpeedCheck();
         CheckGrounded();
 
-        Debug.DrawRay(transform.position, Vector3.down * 0.2f, Color.yellow);
+        //Debug.DrawRay(transform.position, Vector3.down * 0.2f, Color.yellow);
         UpdateAnimations();
         MovePlayer();
 
@@ -164,6 +194,19 @@ public class PlayerManager : MonoBehaviour
             isJumping = true;
             playerAnimator.SetTrigger("Jump");
             fallVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+    }
+    private void Crouch()
+    {
+        if (!isCruching)
+        {
+            isCruching = true;
+            Debug.Log("Está Agachado");
+        }
+        else
+        {
+            isCruching = false;
+            Debug.Log("Levantarse");
         }
     }
 

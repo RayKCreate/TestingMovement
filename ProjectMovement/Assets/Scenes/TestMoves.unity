@@ -1319,11 +1319,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0bedb6f7f955744caafea83976b9150, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
-  leanDetectorL: {fileID: 0}
-  leanDetectorR: {fileID: 0}
   playerAnimator: {fileID: 0}
   cinemachineFollow: {fileID: 0}
-  walkExponent: 2.75
+  walkForwardSpeed: 0
+  progressiveWalkSpeed: 0
+  walkBackwardSpeed: 0
+  RunSpeed: 0
   jumpHeight: 0
 --- !u!1 &1555365937
 GameObject:
