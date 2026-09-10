@@ -1325,6 +1325,8 @@ MonoBehaviour:
   progressiveWalkSpeed: 0
   walkBackwardSpeed: 0
   RunSpeed: 0
+  crouchWalkForward: 0
+  crouchWalkBackward: 0
   jumpHeight: 0
 --- !u!1 &1555365937
 GameObject:

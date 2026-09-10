@@ -26,6 +26,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] float RunSpeed;
     float rotate;
     float rotateSpeed;
+    [SerializeField] float crouchWalkForward;
+    [SerializeField] float crouchWalkBackward;
 
     [Header("Jump Variables")]
     float gravity;
@@ -40,7 +42,7 @@ public class PlayerManager : MonoBehaviour
     [Header("Check Variables")]
     bool isRunning;
     bool isJumping;
-    bool isCruching;
+    bool isCrouching;
     
 
 
@@ -81,13 +83,13 @@ public class PlayerManager : MonoBehaviour
         {
             if(_.control.device is Keyboard)
             {
-                isCruching = true;
+                isCrouching = true;
                 Debug.Log("Está Agachado");
             }
             else if (_.control.device is Gamepad)
             {
-                isCruching = !isCruching;
-                if(isCruching)
+                isCrouching = !isCrouching;
+                if(isCrouching)
                     Debug.Log("Está Levantado");
                 else
                     Debug.Log("Está Agachado");
@@ -99,7 +101,7 @@ public class PlayerManager : MonoBehaviour
         {
             if (_.control.device is Keyboard)
             {
-                isCruching = false;
+                isCrouching = false;
                 Debug.Log("Está Levantado");
             }
         };
@@ -134,6 +136,9 @@ public class PlayerManager : MonoBehaviour
         walkForwardSpeed = 3.5f;
         walkBackwardSpeed = 2f;
         RunSpeed = 6.5f;
+
+        crouchWalkForward = 2f;
+        crouchWalkBackward = 1f;
 
         rotateSpeed = 0.25f;
 
@@ -189,7 +194,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Jump()
     {
-        if (playerController.isGrounded && !isJumping)
+        if (playerController.isGrounded && !isJumping && !isCrouching)
         {
             isJumping = true;
             playerAnimator.SetTrigger("Jump");
@@ -198,27 +203,32 @@ public class PlayerManager : MonoBehaviour
     }
     private void Crouch()
     {
-        if (!isCruching)
+        if (!isCrouching)
         {
-            isCruching = true;
+            isCrouching = true;
             Debug.Log("Está Agachado");
         }
         else
         {
-            isCruching = false;
+            isCrouching = false;
             Debug.Log("Levantarse");
         }
     }
 
     private void UpdateAnimations()
     {
-        playerAnimator.SetFloat("Walk", walk.y);
+        if(isCrouching)
+            playerAnimator.SetFloat("Walk", walk.y, 0.2f, Time.deltaTime);
+        else
+            playerAnimator.SetFloat("Walk", walk.y);
+
         playerAnimator.SetBool("Run", isRunning);
         playerAnimator.SetFloat("Rotate", rotate);
         playerAnimator.SetBool("IsGrounded", playerController.isGrounded);
         //playerAnimator.SetBool("LeanToLeft", leanDetectorR.leanToLeft);
         //playerAnimator.SetBool("LeanToRight", leanDetectorL.leanToRight);
         playerAnimator.SetBool("IsJumping", isJumping);
+        playerAnimator.SetBool("IsCrouching", isCrouching);
 
     }
 
@@ -227,17 +237,31 @@ public class PlayerManager : MonoBehaviour
         progressiveWalkSpeed = Mathf.Pow(Mathf.Abs(walk.y), walkExponent) * Mathf.Sign(walk.y) * walkForwardSpeed;
 
         if (walk.y <= -0.2f)
+            actualSpeed = walkBackwardSpeed;
+        else if (isRunning && !isCrouching)
+            actualSpeed = RunSpeed;
+        else if (isCrouching && !isRunning)
+        {
+            if (walk.y <= -0.2f)
+                actualSpeed = crouchWalkBackward;
+            else
+                actualSpeed = crouchWalkForward;
+        }
+        else if (!isRunning && !isCrouching && walk.y >= 0.2f)
+            actualSpeed = progressiveWalkSpeed;
+
+        /*if (walk.y <= -0.2f)
         {
             actualSpeed = walkBackwardSpeed;
         }
-        else if (isRunning) 
+        else if (isRunning)
         {
             actualSpeed = RunSpeed;
         }
         else
         {
             actualSpeed = progressiveWalkSpeed;
-        }
+        }*/
 
     }
 
