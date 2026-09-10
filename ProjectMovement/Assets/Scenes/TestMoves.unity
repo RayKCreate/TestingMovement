@@ -1324,6 +1324,7 @@ MonoBehaviour:
   playerAnimator: {fileID: 0}
   cinemachineFollow: {fileID: 0}
   walkExponent: 2.75
+  jumpHeight: 0
 --- !u!1 &1555365937
 GameObject:
   m_ObjectHideFlags: 0
