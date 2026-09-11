@@ -43,8 +43,7 @@ public class PlayerManager : MonoBehaviour
     bool isRunning;
     bool isJumping;
     bool isCrouching;
-    
-
+    bool isRolling;
 
     private void Awake()
     {
@@ -69,7 +68,13 @@ public class PlayerManager : MonoBehaviour
 
         newActions.PlayerMoveSet.Run.performed += _ =>
         {
-            isRunning = !isRunning;
+            if (!isCrouching)
+                isRunning = !isRunning;
+            else
+            {
+                isCrouching = false;
+                isRunning = !isRunning;
+            }
         };
 
         newActions.PlayerMoveSet.ResetCamera.performed += _ =>
@@ -81,19 +86,22 @@ public class PlayerManager : MonoBehaviour
 
         newActions.PlayerMoveSet.Crouch.performed += _ =>
         {
-            if(_.control.device is Keyboard)
+            if (!isRunning || walk.y <= -0.2f)
             {
-                isCrouching = true;
-                Debug.Log("Está Agachado");
-            }
-            else if (_.control.device is Gamepad)
-            {
-                isCrouching = !isCrouching;
-                if(isCrouching)
-                    Debug.Log("Está Levantado");
-                else
+                if(_.control.device is Keyboard)
+                {
+                    isCrouching = true;
                     Debug.Log("Está Agachado");
+                }
+                else if (_.control.device is Gamepad)
+                {
+                    isCrouching = !isCrouching;
+                    if(isCrouching)
+                        Debug.Log("Está Levantado");
+                    else
+                        Debug.Log("Está Agachado");
 
+                }
             }
         };
 
@@ -201,16 +209,16 @@ public class PlayerManager : MonoBehaviour
             fallVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
-    private void Crouch()
+    private void Roll()
     {
         if (!isCrouching)
         {
-            isCrouching = true;
+            isRolling = true;
             Debug.Log("Está Agachado");
         }
         else
         {
-            isCrouching = false;
+            isRolling = false;
             Debug.Log("Levantarse");
         }
     }
@@ -236,11 +244,11 @@ public class PlayerManager : MonoBehaviour
     {
         progressiveWalkSpeed = Mathf.Pow(Mathf.Abs(walk.y), walkExponent) * Mathf.Sign(walk.y) * walkForwardSpeed;
 
-        if (walk.y <= -0.2f)
+        /*if (walk.y <= -0.2f)
             actualSpeed = walkBackwardSpeed;
-        else if (isRunning && !isCrouching)
+        else if (isRunning)
             actualSpeed = RunSpeed;
-        else if (isCrouching && !isRunning)
+        else if (isCrouching)
         {
             if (walk.y <= -0.2f)
                 actualSpeed = crouchWalkBackward;
@@ -248,7 +256,28 @@ public class PlayerManager : MonoBehaviour
                 actualSpeed = crouchWalkForward;
         }
         else if (!isRunning && !isCrouching && walk.y >= 0.2f)
-            actualSpeed = progressiveWalkSpeed;
+            actualSpeed = progressiveWalkSpeed;*/
+
+        if (isCrouching)
+        {
+            if (walk.y <= -0.2f)
+                actualSpeed = crouchWalkBackward;
+            else
+                actualSpeed = crouchWalkForward;
+        }
+        else
+        {
+            if (walk.y <= -0.2f)
+                actualSpeed = walkBackwardSpeed;
+            else
+            {
+                if (isRunning)
+                    actualSpeed = RunSpeed;
+                else
+                    actualSpeed = progressiveWalkSpeed;
+            }
+        }
+
 
         /*if (walk.y <= -0.2f)
         {
