@@ -845,6 +845,11 @@ MonoBehaviour:
   leanCollider: {fileID: 0}
   leanToRight: 0
   leanToLeft: 0
+--- !u!1 &682115465 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 93a28e6011ff1bf439b581d4a5c5e78d, type: 3}
+  m_PrefabInstance: {fileID: 1632629844}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1259,7 +1264,7 @@ GameObject:
   - component: {fileID: 1526548823}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1319,8 +1324,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0bedb6f7f955744caafea83976b9150, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
+  playerController: {fileID: 0}
   playerAnimator: {fileID: 0}
   cinemachineFollow: {fileID: 0}
+  walk: {x: 0, y: 0}
   walkForwardSpeed: 0
   progressiveWalkSpeed: 0
   walkBackwardSpeed: 0
@@ -1328,6 +1335,7 @@ MonoBehaviour:
   crouchWalkForward: 0
   crouchWalkBackward: 0
   jumpHeight: 0
+  isRolling: 0
 --- !u!1 &1555365937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1426,13 +1434,28 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 93a28e6011ff1bf439b581d4a5c5e78d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1632629847}
   m_SourcePrefab: {fileID: 100100000, guid: 93a28e6011ff1bf439b581d4a5c5e78d, type: 3}
 --- !u!4 &1632629845 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 93a28e6011ff1bf439b581d4a5c5e78d, type: 3}
   m_PrefabInstance: {fileID: 1632629844}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1632629847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682115465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a51389252783d49969588f2d99b185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EventsAnimations
 --- !u!1 &2101109181
 GameObject:
   m_ObjectHideFlags: 0

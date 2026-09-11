@@ -7,7 +7,8 @@ public class PlayerManager : MonoBehaviour
 {
     [Header("Components")]
     private InputActions newActions;
-    CharacterController playerController;
+    public CharacterController playerController;
+    EventsAnimations eventsScript;
     //[SerializeField] LeanDetection leanDetectorL;
     //[SerializeField] LeanDetection leanDetectorR;
 
@@ -16,7 +17,7 @@ public class PlayerManager : MonoBehaviour
 
 
     [Header("Walk and Rotate Variables")]
-    Vector2 walk;
+    public Vector2 walk;
     float initSpeed;
     float actualSpeed;
     [SerializeField] float walkForwardSpeed;
@@ -43,7 +44,7 @@ public class PlayerManager : MonoBehaviour
     bool isRunning;
     bool isJumping;
     bool isCrouching;
-    bool isRolling;
+    public bool isRolling;
 
     [Header("Character Variables")]
     float playerHeightInit;
@@ -52,13 +53,15 @@ public class PlayerManager : MonoBehaviour
     Vector3 playerCenterCrouch;
     float playerHeightWalkCrouch;
     Vector3 playerCenterWalkCrouch;
-
+    float playerHeightRoll;
+    Vector3 playerCenterRoll;
 
 
     private void Awake()
     {
         playerController = GetComponent<CharacterController>();
         playerAnimator = GameObject.Find("Iddle").GetComponent<Animator>();
+        eventsScript = GameObject.Find("Iddle").GetComponent<EventsAnimations>();
         //leanDetectorL = GameObject.FindGameObjectWithTag("LeanDetectorL").GetComponent<LeanDetection>();
         //leanDetectorR = GameObject.FindGameObjectWithTag("LeanDetectorR").GetComponent<LeanDetection>();
         cinemachineFollow = GameObject.FindGameObjectWithTag("Camera").GetComponent<CinemachineOrbitalFollow>();
@@ -128,6 +131,7 @@ public class PlayerManager : MonoBehaviour
             //CrouchCharacterHeight();
         };
 
+        newActions.PlayerMoveSet.Roll.started += _ => Roll();
     }
 
 
@@ -158,7 +162,9 @@ public class PlayerManager : MonoBehaviour
         playerCenterCrouch = new Vector3(0f, 0.5f, 0.04f);
         playerHeightWalkCrouch = 1.4f;
         playerCenterWalkCrouch = new Vector3(0f, 0.7f, 0f);
-        
+        playerHeightRoll = 1.2f;
+        playerCenterRoll = new Vector3(0f, 0.6f, 0.05f);
+
         walkExponent = 2.75f;
         initSpeed = 0f;
         actualSpeed = initSpeed;
@@ -202,10 +208,14 @@ public class PlayerManager : MonoBehaviour
             }
             else if (walk.y <= -0.2f || walk.y >= 0.2f)
             {
-                Debug.Log("Andagachao");
                 playerController.height = playerHeightWalkCrouch;
                 playerController.center = playerCenterWalkCrouch;
             }
+        }
+        else if (playerAnimationInfo.IsName("Roll"))
+        {
+            playerController.height = playerHeightRoll;
+            playerController.center = playerCenterRoll;
         }
         else
         {
@@ -250,7 +260,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Jump()
     {
-        if (playerController.isGrounded && !isJumping && !isCrouching)
+        if (playerController.isGrounded && !isJumping && !isCrouching && !isRolling)
         {
             isJumping = true;
             playerAnimator.SetTrigger("Jump");
@@ -261,15 +271,10 @@ public class PlayerManager : MonoBehaviour
 
     private void Roll()
     {
-        if (!isCrouching)
+        if (isRunning && playerController.isGrounded && walk.y >= 0.2f && !isCrouching && !isJumping && !isRolling)
         {
             isRolling = true;
-            Debug.Log("Está Agachado");
-        }
-        else
-        {
-            isRolling = false;
-            Debug.Log("Levantarse");
+            playerAnimator.SetTrigger("Roll");
         }
     }
 
