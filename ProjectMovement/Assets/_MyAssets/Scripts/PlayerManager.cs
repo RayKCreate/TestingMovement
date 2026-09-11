@@ -45,6 +45,16 @@ public class PlayerManager : MonoBehaviour
     bool isCrouching;
     bool isRolling;
 
+    [Header("Character Variables")]
+    float playerHeightInit;
+    Vector3 playerCenterInit;
+    float playerHeightCrouch;
+    Vector3 playerCenterCrouch;
+    float playerHeightWalkCrouch;
+    Vector3 playerCenterWalkCrouch;
+
+
+
     private void Awake()
     {
         playerController = GetComponent<CharacterController>();
@@ -103,6 +113,9 @@ public class PlayerManager : MonoBehaviour
 
                 }
             }
+
+            //CrouchCharacterHeight();
+
         };
 
         newActions.PlayerMoveSet.Crouch.canceled += _ =>
@@ -112,6 +125,7 @@ public class PlayerManager : MonoBehaviour
                 isCrouching = false;
                 Debug.Log("Está Levantado");
             }
+            //CrouchCharacterHeight();
         };
 
     }
@@ -138,6 +152,13 @@ public class PlayerManager : MonoBehaviour
     private void VariablesValue()
     {
         gravity = Physics.gravity.y;
+        playerHeightInit = playerController.height;
+        playerCenterInit = playerController.center;
+        playerHeightCrouch = 1f;
+        playerCenterCrouch = new Vector3(0f, 0.5f, 0.04f);
+        playerHeightWalkCrouch = 1.4f;
+        playerCenterWalkCrouch = new Vector3(0f, 0.7f, 0f);
+        
         walkExponent = 2.75f;
         initSpeed = 0f;
         actualSpeed = initSpeed;
@@ -159,11 +180,38 @@ public class PlayerManager : MonoBehaviour
     {
         SpeedCheck();
         CheckGrounded();
-
         //Debug.DrawRay(transform.position, Vector3.down * 0.2f, Color.yellow);
         UpdateAnimations();
         MovePlayer();
+        CrouchCharacterHeight();
 
+    }
+
+    public void CrouchCharacterHeight()
+    {
+        AnimatorStateInfo playerAnimationInfo = playerAnimator.GetCurrentAnimatorStateInfo(0);
+
+        
+
+        if (playerAnimationInfo.IsName("Crouch"))
+        {
+            if (walk.y >= -0.2f && walk.y <= 0.2f)
+            {
+                playerController.height = playerHeightCrouch;
+                playerController.center = playerCenterCrouch;
+            }
+            else if (walk.y <= -0.2f || walk.y >= 0.2f)
+            {
+                Debug.Log("Andagachao");
+                playerController.height = playerHeightWalkCrouch;
+                playerController.center = playerCenterWalkCrouch;
+            }
+        }
+        else
+        {
+            playerController.height = playerHeightInit;
+            playerController.center = playerCenterInit;
+        }
     }
 
     private void CheckGrounded()
@@ -209,6 +257,8 @@ public class PlayerManager : MonoBehaviour
             fallVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
+
+
     private void Roll()
     {
         if (!isCrouching)
@@ -231,7 +281,7 @@ public class PlayerManager : MonoBehaviour
             playerAnimator.SetFloat("Walk", walk.y);
 
         playerAnimator.SetBool("Run", isRunning);
-        playerAnimator.SetFloat("Rotate", rotate);
+        playerAnimator.SetFloat("Rotate", rotate, 0.2f, Time.deltaTime);
         playerAnimator.SetBool("IsGrounded", playerController.isGrounded);
         //playerAnimator.SetBool("LeanToLeft", leanDetectorR.leanToLeft);
         //playerAnimator.SetBool("LeanToRight", leanDetectorL.leanToRight);
@@ -243,20 +293,6 @@ public class PlayerManager : MonoBehaviour
     private void SpeedCheck()
     {
         progressiveWalkSpeed = Mathf.Pow(Mathf.Abs(walk.y), walkExponent) * Mathf.Sign(walk.y) * walkForwardSpeed;
-
-        /*if (walk.y <= -0.2f)
-            actualSpeed = walkBackwardSpeed;
-        else if (isRunning)
-            actualSpeed = RunSpeed;
-        else if (isCrouching)
-        {
-            if (walk.y <= -0.2f)
-                actualSpeed = crouchWalkBackward;
-            else
-                actualSpeed = crouchWalkForward;
-        }
-        else if (!isRunning && !isCrouching && walk.y >= 0.2f)
-            actualSpeed = progressiveWalkSpeed;*/
 
         if (isCrouching)
         {
@@ -277,20 +313,6 @@ public class PlayerManager : MonoBehaviour
                     actualSpeed = progressiveWalkSpeed;
             }
         }
-
-
-        /*if (walk.y <= -0.2f)
-        {
-            actualSpeed = walkBackwardSpeed;
-        }
-        else if (isRunning)
-        {
-            actualSpeed = RunSpeed;
-        }
-        else
-        {
-            actualSpeed = progressiveWalkSpeed;
-        }*/
 
     }
 
