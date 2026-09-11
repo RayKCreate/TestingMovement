@@ -11,7 +11,7 @@ public class PlayerManager : MonoBehaviour
     EventsAnimations eventsScript;
     //[SerializeField] LeanDetection leanDetectorL;
     //[SerializeField] LeanDetection leanDetectorR;
-
+    PlayerInteractions playerInteractions;
     [SerializeField] Animator playerAnimator;
     [SerializeField] CinemachineOrbitalFollow cinemachineFollow;
 
@@ -62,6 +62,7 @@ public class PlayerManager : MonoBehaviour
         playerController = GetComponent<CharacterController>();
         playerAnimator = GameObject.Find("Iddle").GetComponent<Animator>();
         eventsScript = GameObject.Find("Iddle").GetComponent<EventsAnimations>();
+        playerInteractions = GetComponent<PlayerInteractions>();
         //leanDetectorL = GameObject.FindGameObjectWithTag("LeanDetectorL").GetComponent<LeanDetection>();
         //leanDetectorR = GameObject.FindGameObjectWithTag("LeanDetectorR").GetComponent<LeanDetection>();
         cinemachineFollow = GameObject.FindGameObjectWithTag("Camera").GetComponent<CinemachineOrbitalFollow>();
@@ -132,6 +133,11 @@ public class PlayerManager : MonoBehaviour
         };
 
         newActions.PlayerMoveSet.Roll.started += _ => Roll();
+
+        newActions.PlayerMoveSet.Interact.started += _ =>
+        {
+            playerInteractions.Interactions();
+        };
     }
 
 

@@ -8,6 +8,10 @@ TagManager:
   - LeanDetectorL
   - Wall
   - Camera
+  - LowerObstacle
+  - HighObstacle
+  - ClimbObstacle
+  - ShortObstacle
   layers:
   - Default
   - TransparentFX

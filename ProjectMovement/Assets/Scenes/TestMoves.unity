@@ -913,7 +913,7 @@ GameObject:
   - component: {fileID: 1098464283}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Wall
+  m_TagString: LowerObstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1262,6 +1262,7 @@ GameObject:
   - component: {fileID: 1526548821}
   - component: {fileID: 1526548822}
   - component: {fileID: 1526548823}
+  - component: {fileID: 1526548824}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1336,6 +1337,18 @@ MonoBehaviour:
   crouchWalkBackward: 0
   jumpHeight: 0
   isRolling: 0
+--- !u!114 &1526548824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526548820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b07e01f7cf07a5439f6870dc46602e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractions
 --- !u!1 &1555365937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1470,7 +1483,7 @@ GameObject:
   - component: {fileID: 2101109182}
   m_Layer: 0
   m_Name: Cube (1)
-  m_TagString: Wall
+  m_TagString: ClimbObstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
