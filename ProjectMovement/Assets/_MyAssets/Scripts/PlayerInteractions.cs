@@ -36,11 +36,22 @@ public class PlayerInteractions : MonoBehaviour
         {
             if (objectDetect.transform.tag == "ClimbObstacle" && !actionClimb)
             {
-                //actionClimb = true;
+                actionClimb = true;
                 Debug.Log("EUREKAAA");
             }
-            else
-                return;
+            else if (objectDetect.transform.tag == "LowerObstacle" && !actionJump)
+            {
+                actionJump = true;
+                Debug.Log("EUREKAAA");
+            }
+            else if (objectDetect.transform.tag == "ShortObstacle" && !actionOverPass)
+            {
+                actionOverPass = true;
+            }
+            else if (objectDetect.transform.tag == "HighObstacle" && !actionSneak)
+            {
+                actionSneak = true;
+            }
         }
         else
             return;
